@@ -4,11 +4,12 @@
 # Author: Yuya Aoki
 #
 ###########################
+from keywords import *
 
 
 class Skill(object):
     def __init__(self):
-        self.kind = 'slash'
+        self.kind = SLASH
         self.power = 100
 
     def get_kind(self):
@@ -18,19 +19,19 @@ class Skill(object):
         return self.power
 
     def instance(self):
-        return 'Atack'
+        return ATACK
 
 
 class Magic(Skill):
     def __init__(self):
-        self.kind = 'omni'
+        self.kind = OMNI
         self.power = 100
 
     def instance(self):
-        return 'Magic'
+        return MAGIC
 
 
 class Flame_arrow(Magic):
     def __init__(self):
-        self.kind = 'flame'
-        self.power = 400
+        self.kind = FLAME
+        self.power = 500

@@ -1,4 +1,3 @@
-#! !(which python)
 # coding: utf-8
 ###########################
 # Author: Yuya Aoki
@@ -6,6 +5,7 @@
 ###########################
 import random
 from weapon import Unarmed
+from keywords import *
 # import weapon as wp
 # import skill as sk
 
@@ -27,7 +27,7 @@ class Citeons(object):
         self.addvanced_status()
         self.init_skills()
         self.init_weapopn_skills()
-        self.init_resists()
+        self.init_regists()
         self.weak = []
 
     def addvanced_status(self):
@@ -39,44 +39,13 @@ class Citeons(object):
         self.critical = False
 
     def init_skills(self):
-        self.skills = {
-                'slash': 0.1,
-                'blow': 0.1,
-                'thrust': 0.1,
-                'flame': 0.1,
-                'fleeze': 0.1,
-                'electric': 0.1,
-                'wind': 0.1,
-                'bless': 0.1,
-                'curse': 0.1,
-                'omni': 0.1
-                }
+        self.skills = { skill: 0.1 for skill in skill_list }
 
     def init_weapopn_skills(self):
-        self.weapopn_skills = {
-                'Halberd': 0.1,
-                'Sword': 0.1,
-                'Long sword': 0.1,
-                'Bow': 0.1,
-                'Fist': 0.1,
-                'Gun': 0.1,
-                'Spear': 0.1,
-                'Blunt': 0.1,  # 鈍器
-                'Cane': 0.1  # 杖
-                }
+        self.weapopn_skills = { shape: 0.1 for shape in weapon_shape_list }
 
-    def init_resists(self):
-        self.resist = {
-                'slash': 0.1,
-                'blow': 0.1,
-                'thrust': 0.1,
-                'flame': 0.1,
-                'fleeze': 0.1,
-                'electric': 0.1,
-                'wind': 0.1,
-                'bless': 0.1,
-                'curse': 0.1
-                }
+    def init_regists(self):
+        self.regist = { regist: 0.1 for regist in regist_list}
 
     def equip(self, weapon):
         self.weapon = weapon
@@ -89,7 +58,7 @@ class Citeons(object):
 
     def atack(self, enemy, skill=None):
         if skill is not None:
-            if skill.instance() == 'Magic':
+            if skill.instance() == MAGIC:
                 self.magic_atack(enemy, skill)
             else:
                 self.skill_atack(enemy, skill)
@@ -115,14 +84,14 @@ class Citeons(object):
         self.skills[self.weapon.get_kind()] += 0.01
 
     def block(self, kind):
-        if kind != 'omni':
-            self.resist[kind] += 0.001
-        return self.taf + self.resist[kind]
+        if kind != OMNI:
+            self.regist[kind] += 0.001
+        return self.taf + self.regist[kind]
 
     def magic_block(self, kind):
-        if kind != 'omni':
-            self.resist[kind] += 0.001
-        return self.mag + self.taf + self.resist[kind]
+        if kind != OMNI:
+            self.regist[kind] += 0.001
+        return self.mag + self.taf + self.regist[kind]
 
     def speed(self):
         return 100 - self.weight + self.agi
@@ -136,7 +105,7 @@ class Citeons(object):
         else:
             dm = point - block_value
         self.hp = self.hp - dm
-        print(self.name, '残りHP:', self.hp)
+        self.print_now_hp()
 
     def nockback(self, enemy_weight, per=None):
         if per is None:
@@ -168,28 +137,29 @@ class Citeons(object):
         else:
             dm = point - block_value
         self.hp = self.hp - dm
-        print(self.name, '残りHP:', self.hp)
+        self.print_now_hp()
 
     def magic_nockback(self, enemy_magic, per=None):
         if enemy_magic in self.weak:
-            self.state = 'nockback'
+            self.state = NOCKBACK
         if per is None:
             return None
         rand = random.randint(0, 100)
         if per > rand:
-            self.state = 'nockback'
+            self.state = NOCKBACK
 
     def accuracy(self):
-        return (self.agi + self.height + self.dex) / 10
+        tmp = (self.agi + self.height + self.dex) / 10
+        return tmp
 
     def aboidance(self):
-        return (self.agi + self.dex) / (self.height + self.weight)
+        tmp = float(self.agi + self.dex) / (self.height + self.weight)
+        return tmp
 
     def is_hit(self, enemy):
         hit_rate = self.accuracy() / enemy.aboidance()
         per = hit_rate + self.weapopn_skills[self.weapon.get_shape()] / 10
         self.dice = random.randint(0, 100)
-        # print(per, self.dice)
         if self.dice == 0:
             print('critical')
             self.critical = True
@@ -199,6 +169,10 @@ class Citeons(object):
             return True
         else:
             return False
+    def print_now_hp(self):
+        string = ' '.join([self.name , NOW_HP , str(self.hp)])
+        print(string)
+
 
 
 

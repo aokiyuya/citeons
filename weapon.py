@@ -4,12 +4,13 @@
 # Author: Yuya Aoki
 #
 ###########################
+from keywords import *
 
 
 class Weapon(object):
     def __init__(self):
-        self.shape = 'Sword'
-        self.kind = 'slash'
+        self.shape = SWORD
+        self.kind = SLASH
         self.power = 100
 
     def get_kind(self):
@@ -24,6 +25,6 @@ class Weapon(object):
 
 class Unarmed(Weapon):
     def __init__(self):
-        self.shape = 'Fist'
-        self.kind = 'blow'
-        self.power = 1
+        self.shape = FIST
+        self.kind = BLOW
+        self.power = 100
